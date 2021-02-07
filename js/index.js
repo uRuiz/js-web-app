@@ -1,3 +1,5 @@
+const CORS_PROXY = 'http://localhost:3000/';
+
 getActualLocation = () => {
   if (navigator.geolocation) { 
     navigator.geolocation.getCurrentPosition(returnActualLocation) 
@@ -12,14 +14,16 @@ returnActualLocation = (position) => {
 
 
 getCurrentWeather = async (lat, long) => {
-  const locationResponse = await fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/search/?lattlong=${lat},${long}`)
+  const locationResponse = await fetch(`${CORS_PROXY}weather/current?lat=${lat}&long=${long}`)
   const locationData = await locationResponse.json();
-  console.log(locationData);
   const locationId = await locationData[0].woeid;
-  const weatherResponse = await fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/${locationId}`);
+  getWeatherByLocationId(locationId);
+}
+
+getWeatherByLocationId = async (locationId) => {
+  const weatherResponse = await fetch(`${CORS_PROXY}weather/locationId?locationId=${locationId}`);
   const weatherData = await weatherResponse.json();
-  console.log(weatherData.consolidated_weather[0]);
+  console.log(weatherData.consolidated_weather[0]);  
 }
 
 getActualLocation();
-
